@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Make Animations</title>
+  <link rel="stylesheet" href="../sass_mid_compile/styles/data.css" />
+  <link rel="stylesheet" href="../sass_mid_compile/styles/index.css" />
+  <link rel="stylesheet" href="../sass_mid_compile/styles/utility.css" />
+  <link rel="stylesheet" href="../sass_mid_compile/fonts/cartograph.css" />
+  <link rel="stylesheet" href="../sass_mid_compile/dithering/texture.css" />
+  <script src="../ts_mid_compile/index.js"></script>
+  <script src="../ts_mid_compile/keyboard.js"></script>
+</head>
+
+<body onload="main()">
+  <input type="radio" name="sidebar" class="data sidebar-data" value="sigils" id="sidebar-1" checked />
+  <input type="radio" name="sidebar" class="data sidebar-data" value="projects" id="sidebar-2" />
+  <input type="radio" name="sidebar" class="data sidebar-data" value="colors" id="sidebar-3" />
+  <input type="radio" name="sidebar" class="data sidebar-data" value="paths" id="sidebar-4" />
+  <input type="radio" name="sidebar" class="data sidebar-data" value="objects" id="sidebar-5" />
+  <input type="checkbox" name="sidebar-hider" class="data" id="sidebar-hider" />
+  <input type="radio" name="toolbar" class="data toolbar-data pointer" value="move" id="toolbar-1" checked />
+  <input type="radio" name="toolbar" class="data toolbar-data pointer" value="pick-object" id="toolbar-2" />
+  <input type="radio" name="toolbar" class="data toolbar-data pointer" value="pick-path" id="toolbar-3" />
+  <input type="radio" name="toolbar" class="data toolbar-data creator" value="add-color" id="toolbar-4" />
+  <input type="radio" name="toolbar" class="data toolbar-data creator" value="add-path" id="toolbar-5" />
+  <input type="radio" name="toolbar" class="data toolbar-data creator" value="add-object" id="toolbar-6" />
+
+
+  <!--main-->
+  <main>
+    <div class="black-box" id="sidebar" title="sidebar area">
+      <div class="tabs">
+        <label class="clickable black-box" for="sidebar-1" title="sidebar open sigils">|$</label>
+        <label class="clickable black-box" for="sidebar-2" title="sidebar open projects">|&</label>
+        <label class="clickable black-box" for="sidebar-3" title="sidebar open colors">|#</label>
+        <label class="clickable black-box" for="sidebar-4" title="sidebar open paths">|~</label>
+        <label class="clickable black-box" for="sidebar-5" title="sidebar open objects">|%</label>
+        <label class="clickable  black-box close toggle" for="sidebar-hider" title="close sidebar view">&lt;|</label>
+        <label class="clickable  black-box open toggle" for="sidebar-hider" title="open sidebar view">|&gt;</label>
+        <hr>
+      </div>
+      <div class="list" title="sidebar list"></div>
+    </div>
+    <div class="black-box" id="toolbar" title="toolbox">
+      <div class="tabs">
+        <label class="clickable black-box" for="toolbar-1" title="navigation tool">^_</label>
+        <label class="clickable black-box" for="toolbar-2" title="select object tool">^%</label>
+        <label class="clickable black-box" for="toolbar-3" title="select path tool">^~</label>
+        <label class="clickable black-box" for="toolbar-4" title="select color add tool">+#</label>
+        <label class="clickable black-box" for="toolbar-5" title="new path tool">+~</label>
+        <label class="clickable black-box" for="toolbar-6" title="create object from path tool">+%</label>
+        <hr>
+      </div>
+    </div>
+    <div id="canvas" class="black-box">
+    </div>
+  </main>
+</body>
+
+
+</html>

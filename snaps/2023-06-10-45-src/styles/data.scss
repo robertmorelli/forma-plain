@@ -1,0 +1,20 @@
+$bars: "tool" "side";
+
+@supports (display: grid) and (width: fit-content) and (user-select: none) {
+  html>body {
+    --tool-number: 1;
+
+    @each $bar in $bars {
+      @for $i from 1 through 12 {
+        >input.data.#{$bar}bar-data##{$bar}bar-#{$i}:checked~main>##{$bar}bar {
+          --tool-number: #{$i};
+        }
+      }
+
+      >main>div##{$bar}bar>div.tabs>hr {
+        grid-column-start: var(--tool-number);
+        grid-column-end: span(1);
+      }
+    }
+  }
+}

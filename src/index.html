@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Make Animations</title>
+  <link rel="stylesheet" href="../sass_mid_compile/styles/data.css" />
+  <link rel="stylesheet" href="../sass_mid_compile/styles/index.css" />
+  <link rel="stylesheet" href="../sass_mid_compile/styles/utility.css" />
+  <link rel="stylesheet" href="../sass_mid_compile/fonts/cartograph.css" />
+  <link rel="stylesheet" href="../sass_mid_compile/dithering/texture.css" />
+</head>
+
+<body>
+  <form id="ui">
+    <input type="radio" name="tab" value="sigils" id="tab-1" checked />
+    <label for="tab-1" title="view sigils">|$</label>
+    <input type="radio" name="tab" value="projects" id="tab-2" />
+    <label for="tab-2" title="view projects">|&</label>
+    <input type="radio" name="tab" value="colors" id="tab-3" />
+    <label for="tab-3" title="view colors">|#</label>
+    <input type="radio" name="tab" value="paths" id="tab-4" />
+    <label for="tab-4" title="view paths">|~</label>
+    <input type="radio" name="tab" value="objects" id="tab-5" />
+    <label for="tab-5" title="view objects">|%</label>
+    <input type="radio" name="tab" value="move" id="tab-6" />
+    <label for="tab-6" title="navigation tool">^_</label>
+    <input type="radio" name="tab" value="pick-object" id="tab-7" />
+    <label for="tab-7" title="select object tool">^%</label>
+    <input type="radio" name="tab" value="pick-path" id="tab-8" />
+    <label for="tab-8" title="select path tool">^~</label>
+    <input type="radio" name="tab" value="add-color" id="tab-9" />
+    <label for="tab-9" title="select color add tool">+#</label>
+    <input type="radio" name="tab" value="add-path" id="tab-10" />
+    <label for="tab-10" title="new path tool">+~</label>
+    <input type="radio" name="tab" value="add-object" id="tab-11" />
+    <label for="tab-11" title="create object from path tool">+%</label>
+    <hr id="tab-bar">
+    <hr id="tab-indicator">
+    <hr id="hover-indicator">
+    <hr id="hover-bar">
+    <div id="tool-box">
+      nope
+    </div>
+  </form>
+  <script defer src="../ts_mid_compile/index.js"></script>
+  <script defer src="../ts_mid_compile/keyboard.js"></script>
+</body>
+
+
+</html>

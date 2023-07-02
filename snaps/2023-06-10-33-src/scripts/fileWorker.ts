@@ -1,0 +1,2 @@
+onmessage = (ev: { data: FileSystemFileHandle }) => {
+};

@@ -1,0 +1,69 @@
+/*
+STYLE GUIDE:
+
+1. for sizing ui... no pixels nowhere nohow not ever nope and in no place. I will find you and kill you!
+2. use ">" over " " wherever possible and reasonable
+3. place duplicate code that should remain in sync in a,b {...} even if b {...} already exists
+4. grid templates only use min-content and auto (and maybe fr units)
+5. minimize depth. use complex grids over nesting wherever reasonable
+6. no timed animations/transitions
+7. its grayscale baby
+*/
+@supports (display: grid) and (width: fit-content) and (user-select: none) {
+  html > body > form#ui {
+    grid-template: min-content 2rem auto/auto repeat(11, min-content) auto;
+    padding: 0.5rem;
+  }
+  html > body > form#ui > div#tool-box {
+    grid-column: 1/-1;
+    grid-row: 3/span 1;
+  }
+  html > body > form#ui > label:nth-of-type(1) {
+    grid-column: 2/span 1;
+    grid-row: 1/span 1;
+  }
+  html > body > form#ui > label:nth-of-type(2) {
+    grid-column: 3/span 1;
+    grid-row: 1/span 1;
+  }
+  html > body > form#ui > label:nth-of-type(3) {
+    grid-column: 4/span 1;
+    grid-row: 1/span 1;
+  }
+  html > body > form#ui > label:nth-of-type(4) {
+    grid-column: 5/span 1;
+    grid-row: 1/span 1;
+  }
+  html > body > form#ui > label:nth-of-type(5) {
+    grid-column: 6/span 1;
+    grid-row: 1/span 1;
+  }
+  html > body > form#ui > label:nth-of-type(6) {
+    grid-column: 7/span 1;
+    grid-row: 1/span 1;
+  }
+  html > body > form#ui > label:nth-of-type(7) {
+    grid-column: 8/span 1;
+    grid-row: 1/span 1;
+  }
+  html > body > form#ui > label:nth-of-type(8) {
+    grid-column: 9/span 1;
+    grid-row: 1/span 1;
+  }
+  html > body > form#ui > label:nth-of-type(9) {
+    grid-column: 10/span 1;
+    grid-row: 1/span 1;
+  }
+  html > body > form#ui > label:nth-of-type(10) {
+    grid-column: 11/span 1;
+    grid-row: 1/span 1;
+  }
+  html > body > form#ui > label:nth-of-type(11) {
+    grid-column: 12/span 1;
+    grid-row: 1/span 1;
+  }
+  html > body > form#ui > label:nth-of-type(12) {
+    grid-column: 13/span 1;
+    grid-row: 1/span 1;
+  }
+}

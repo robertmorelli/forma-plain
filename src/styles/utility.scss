@@ -1,0 +1,69 @@
+@supports (display: grid) and (width: fit-content) and (user-select: none) {
+    html>body {
+        --offwhite: white;
+        --offblack: #212121;
+
+        background-color: var(--offwhite);
+
+        width: 100vw;
+        height: 100vh;
+
+        font-family: "Cartograph CF", sans-serif;
+        font-variant-ligatures: contextual;
+        font-size: 0.8rem;
+        user-select: none;
+
+        &,
+        *:not(script, style, head, meta) {
+            display: grid;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            border-color: transparent;
+            border: none;
+        }
+
+        >form {
+            width: 100vw;
+            height: 100vh;
+
+            >input {
+                display: none;
+            }
+
+            >hr {
+                align-self: center;
+                justify-self: center;
+                width: 100%;
+            }
+
+            div,
+            label {
+                display: grid;
+                padding: 0.5rem;
+            }
+
+            hr {
+                color: var(--offwhite);
+                background-color: var(--offblack);
+            }
+
+            div.black-box,
+            label {
+                color: var(--offblack);
+                background-color: var(--offwhite);
+            }
+
+            label {
+                cursor: pointer;
+                text-align: center;
+                width: 2.5rem;
+                height: 2rem;
+                align-self: start;
+                justify-self: end;
+                align-items: center;
+                justify-items: center;
+            }
+        }
+    }
+}

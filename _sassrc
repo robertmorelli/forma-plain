@@ -1,0 +1,5 @@
+{
+  "outputStyle": "compressed",
+  "sassDir": "src/sass",
+  "cssDir": "sass_mid_compile/styles.css"
+}

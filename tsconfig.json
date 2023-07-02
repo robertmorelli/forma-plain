@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "outDir": "ts_mid_compile",
+    "strict": true,
+    "esModuleInterop": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "ESNext",
+      "WebWorker",
+    ],
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/**/*"
+  ]
+}
