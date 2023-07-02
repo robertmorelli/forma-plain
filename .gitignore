@@ -1,0 +1,5 @@
+node_modules/
+sass_mid_compile/
+ts_mid_compile/
+package-lock.json
+snaps/
