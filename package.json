@@ -6,7 +6,7 @@
     "work": "node build_scripts/watcher.js",
     "nuke": "rm -rf node_modules && rm -rf sass_mid_compile && rm -rf ts_mid_compile && rm -f package-lock.json",
     "start": "npm run nuke && npm install && npm run work",
-    "snap" : "cp fin/index.html snaps/$(date +%Y-%m-%d-%S)-fin.html && cp -vaR src/ snaps/$(date +%Y-%m-%d-%S)-src/"
+    "snap" : "cp docs/index.html snaps/$(date +%Y-%m-%d-%S)-fin.html && cp -vaR src/ snaps/$(date +%Y-%m-%d-%S)-src/"
   },
   "devDependencies": {
     "sass": "latest",
