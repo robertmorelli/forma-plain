@@ -26,6 +26,16 @@
       }
     }
 
+    >div#tool-box {
+      grid-template: 1 / 1;
+      >div {
+        grid-area: 1 / 1;
+        contain: strict;
+        content-visibility: hidden;
+        z-index: 1;
+      }
+    }
+
     @for $i from 1 through 12 {
       >input:nth-of-type(#{$i}):checked~hr:is(#hover-indicator, #tab-indicator) {
         grid-column-start: calc($i + 1);
@@ -45,6 +55,11 @@
       >input:nth-of-type(#{$i}):hover~hr#hover-bar {
         grid-column-end: calc($i + 1);
         display: inherit;
+      }
+
+      >input:nth-of-type(#{$i}):checked~div#tool-box>div:nth-of-type(#{$i}) {
+        content-visibility: visible;
+        z-index: 2;
       }
     }
   }
