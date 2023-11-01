@@ -186,7 +186,7 @@ Main: {
                 }
                 const onclick: () => void = () => {
                     u?.p?.(`EVENT: add-svg button onclick`);
-                    svg((name: string, data: string): void => u?.p?.(data));
+                    svg((name: string, data: string): void => console.log(`name: ${name}\ndata: ${data}`));
                 };
                 button.addEventListener(`click`, onclick);
 

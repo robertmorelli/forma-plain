@@ -717,7 +717,7 @@ STYLE GUIDE:
               }
               const onclick = () => {
                 u?.p?.(`EVENT: add-svg button onclick`);
-                svg((name, data) => u?.p?.(data));
+                svg((name, data) => console.log(`name: ${name}\ndata: ${data}`));
               };
               button.addEventListener(`click`, onclick);
               u?.p?.(`LOADING EVENT: added add-svg button`);
