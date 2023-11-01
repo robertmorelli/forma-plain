@@ -529,12 +529,12 @@ STYLE GUIDE:
       Main: {
         const ui = {};
         FormBinding: {
-          const _uiForm = document.forms.ui;
-          _uiForm.addEventListener(`change`, () => window.location.hash = `#${btoa(JSON.stringify(Object.assign(ui, Object.fromEntries((new FormData(_uiForm)).entries()))))}`);
-          Object.defineProperties(ui, Object.fromEntries(Array.from((new FormData(_uiForm)).keys())
+          const uiForm = document.forms.ui;
+          uiForm.addEventListener(`change`, () => window.location.hash = `#${btoa(JSON.stringify(Object.assign(ui, Object.fromEntries((new FormData(uiForm)).entries()))))}`);
+          Object.defineProperties(ui, Object.fromEntries(Array.from((new FormData(uiForm)).keys())
             .map(key => [
               key, {
-                get: () => (new FormData(_uiForm)).get(key),
+                get: () => (new FormData(uiForm)).get(key),
                 set: (value) => {
                   window.location.hash = btoa(JSON.stringify(ui));
                   const radio = document.querySelector(`[type="radio"][name="${key}"][value="${value}"]`);
@@ -551,6 +551,37 @@ STYLE GUIDE:
           } catch {
             window.location.hash = `#`;
           };
+        }
+        const fileReader = {};
+        fileWorker: {
+          const callbacks = new Map();
+          const worker = new Worker(`scripts/fileWorker.js`);
+          Object.freeze(Object.seal(Object.defineProperty(worker, 'onmessage', ({
+            data
+          }) => {
+            const [name, text] = data.entries().next().value;
+            const callback = callbacks.get(name);
+            if (callback === undefined)
+              return;
+            callback(text);
+            callbacks.delete(name);
+          })));
+          Object.freeze(Object.seal(Object.defineProperty(fileReader, `svg`, (callback) => window.showOpenFilePicker({
+            multiple: false,
+            types: [{
+              description: `SVG Files`,
+              accept: {
+                'image/svg+xml': [`.svg`]
+              }
+            }]
+          }).then((files) => {
+            const fileMaybe = files.pop();
+            if (fileMaybe === undefined)
+              return;
+            callbacks.set(fileMaybe.name, callback);
+            const file = fileMaybe;
+            worker.postMessage(file);
+          }))));
         }
       }
     </script>

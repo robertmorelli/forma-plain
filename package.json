@@ -11,7 +11,9 @@
   "devDependencies": {
     "sass": "latest",
     "typescript": "latest",
-    "html-inline-external": "latest"
+    "html-inline-external": "latest",
+    "@types/web": "latest",
+    "@types/wicg-file-system-access": "latest"
   },
   "author": "Robert Morelli",
   "license": "Proprietary"

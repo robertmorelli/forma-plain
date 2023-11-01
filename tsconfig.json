@@ -11,7 +11,11 @@
       "ESNext",
       "WebWorker",
     ],
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": [
+      "@types/web",
+      "@types/wicg-file-system-access"
+    ]
   },
   "include": [
     "src/**/*"
