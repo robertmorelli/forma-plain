@@ -63,7 +63,14 @@ Main: {
         const callbacks: Map<string, Function> = new Map();
         let worker: Worker
         try {
-            worker = new Worker(`scripts/fileWorker.js`);
+            const elem: Element | null = document.querySelector("script[type='text\/js-worker']");
+            if (elem === null) break readerWorker;
+            const blob: Blob = new Blob(
+                [elem.textContent as string],
+                { type: "text/javascript" },
+            );
+            const url: string = window.URL.createObjectURL(blob);
+            worker = new Worker(url);
         }
         catch {
             break readerWorker;

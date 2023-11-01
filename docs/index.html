@@ -525,7 +525,7 @@ STYLE GUIDE:
         <div id="ao">add object</div>
       </div>
     </form>
-    <script defer="">
+    <script defer="" type="text/javascript">
       "use strict";
       Main: {
         const ui = {};
@@ -587,7 +587,14 @@ STYLE GUIDE:
           const callbacks = new Map();
           let worker;
           try {
-            worker = new Worker(`scripts/fileWorker.js`);
+            const elem = document.querySelector("script[type='text\/js-worker']");
+            if (elem === null)
+              break readerWorker;
+            const blob = new Blob([elem.textContent], {
+              type: "text/javascript"
+            });
+            const url = window.URL.createObjectURL(blob);
+            worker = new Worker(url);
           } catch {
             break readerWorker;
           }
@@ -648,7 +655,7 @@ STYLE GUIDE:
         }
       }
     </script>
-    <script defer="">
+    <script defer="" type="text/javascript">
       "use strict";
       KeyBinding: {
         const shiftmap = Object.fromEntries([
@@ -700,19 +707,14 @@ STYLE GUIDE:
         });
       }
     </script>
-    <script defer="">
-      "use strict";
-      onmessage = async ({
-        data
-      }) => {
-        const blob = await data.getFile();
-        const reader = new FileReaderSync();
-        const text = reader.readAsText(blob);
-        postMessage(new Map([
-          [data.name, text]
-        ]));
-      };
-    </script>
+    <script defer="" type="text/js-worker">"use strict";
+onmessage = async ({ data }) => {
+    const blob = await data.getFile();
+    const reader = new FileReaderSync();
+    const text = reader.readAsText(blob);
+    postMessage(new Map([[data.name, text]]));
+};
+</script>
 
 
 
