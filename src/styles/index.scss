@@ -10,22 +10,26 @@ STYLE GUIDE:
 7. its grayscale baby
 */
 @supports (display: grid) and (width: fit-content) and (user-select: none) {
-  html>body>form#ui {
-    grid-template: min-content 2rem auto / auto repeat(11, min-content) auto;
-    padding: 0.5rem;
-
-    >div#tool-box {
-      contain: strict;
-      grid-column: 1 / -1;
-      grid-row: 3 / span 1;
+  html > body {
+    > form#prog-state {
+      display: none;
     }
+    > form#ui {
+      grid-template: min-content 2rem auto / auto repeat(11, min-content) auto;
+      padding: 0.5rem;
 
-    @for $i from 1 through 12 {
-      >label:nth-of-type(#{$i}) {
-        grid-column: calc($i + 1) / span 1;
-        grid-row: 1 / span 1;
+      > div#tool-box {
+        contain: strict;
+        grid-column: 1 / -1;
+        grid-row: 3 / span 1;
+      }
+
+      @for $i from 1 through 12 {
+        > label:nth-of-type(#{$i}) {
+          grid-column: calc($i + 1) / span 1;
+          grid-row: 1 / span 1;
+        }
       }
     }
-
   }
 }

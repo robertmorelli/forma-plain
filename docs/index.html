@@ -332,6 +332,10 @@ STYLE GUIDE:
 7. its grayscale baby
 */
       @supports (display: grid) and (width: fit-content) and (user-select: none) {
+        html>body>form#prog-state {
+          display: none;
+        }
+
         html>body>form#ui {
           grid-template: min-content 2rem auto/auto repeat(11, min-content) auto;
           padding: 0.5rem;
@@ -476,6 +480,10 @@ STYLE GUIDE:
   </head>
 
   <body>
+    <!--derived from local storage-->
+    <form id="prog-state">
+    </form>
+    <!--derived from frag-->
     <form id="ui">
       <input type="radio" name="tab" value="sigils" id="tab-1" checked="">
       <label for="tab-1" title="view sigils">|$</label>
@@ -577,7 +585,12 @@ STYLE GUIDE:
         const reader = {};
         readerWorker: {
           const callbacks = new Map();
-          const worker = new Worker(`scripts/fileWorker.js`);
+          let worker;
+          try {
+            worker = new Worker(`scripts/fileWorker.js`);
+          } catch {
+            break readerWorker;
+          }
           worker: {
             function onmessage({
               data
@@ -686,6 +699,19 @@ STYLE GUIDE:
           capture: true
         });
       }
+    </script>
+    <script defer="">
+      "use strict";
+      onmessage = async ({
+        data
+      }) => {
+        const blob = await data.getFile();
+        const reader = new FileReaderSync();
+        const text = reader.readAsText(blob);
+        postMessage(new Map([
+          [data.name, text]
+        ]));
+      };
     </script>
 
 

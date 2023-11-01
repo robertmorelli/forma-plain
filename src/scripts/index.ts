@@ -61,8 +61,13 @@ Main: {
     const reader = {};
     readerWorker: {
         const callbacks: Map<string, Function> = new Map();
-
-        const worker: Worker = new Worker(`scripts/fileWorker.js`);
+        let worker: Worker
+        try {
+            worker = new Worker(`scripts/fileWorker.js`);
+        }
+        catch {
+            break readerWorker;
+        }
         worker: {
             function onmessage({ data }: { data: Map<string, string> }): void {
                 const entry: IteratorResult<[String, String] | undefined> = data.entries().next();
@@ -108,5 +113,7 @@ Main: {
             Object.freeze(reader);
         }
     }
+
+
 }
 

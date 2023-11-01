@@ -11,6 +11,10 @@
 </head>
 
 <body>
+  <!--derived from local storage-->
+  <form id="prog-state">
+  </form>
+  <!--derived from frag-->
   <form id="ui">
     <input type="radio" name="tab" value="sigils" id="tab-1" checked />
     <label for="tab-1" title="view sigils">|$</label>
@@ -54,6 +58,7 @@
   </form>
   <script defer src="../ts_mid_compile/index.js"></script>
   <script defer src="../ts_mid_compile/keyboard.js"></script>
+  <script defer src="../ts_mid_compile/fileWorker.js"></script>
 </body>
 
 
