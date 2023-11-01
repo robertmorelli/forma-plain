@@ -513,7 +513,11 @@ STYLE GUIDE:
       <hr id="hover-bar">
       <div id="tool-box">
         <div id="vs">view sigils</div>
-        <div id="vp">view projects</div>
+        <div id="vp">
+          view projects
+          <button id="add-svg">open svg</button>
+          list
+        </div>
         <div id="vc">view colors</div>
         <div id="vpa">view paths</div>
         <div id="vo">view objects</div>
@@ -528,131 +532,200 @@ STYLE GUIDE:
     <script defer="" type="text/javascript">
       "use strict";
       Main: {
-        const ui = {};
-        FormBinding: {
-          const uiForm = document.forms.ui;
-          listen: {
-            function setHashToUI() {
-              const formData = new FormData(uiForm);
-              const entries = Array.from(formData.entries());
-              const onbect = Object.fromEntries(entries);
-              const json = JSON.stringify(onbect);
-              const base64 = btoa(json);
-              window.location.hash = `#${base64}`;
+        document.addEventListener(`DOMContentLoaded`, () => {
+          const u = {};
+          utility: {
+            function log(s) {
+              if (u.d)
+                console.log(s);
             }
-            uiForm.addEventListener(`change`, setHashToUI);
-          }
-          object: {
-            const keys = Array.from((new FormData(uiForm)).keys());
-            for (const key of keys) {
-              function get() {
-                const formData = new FormData(uiForm);
-                const value = formData.get(key);
-                if (value === null)
-                  return undefined;
-                return value.toString();
-              }
 
-              function set(value) {
-                try {
-                  window.location.hash = btoa(JSON.stringify(ui));
-                } catch {
-                  window.location.hash = `#`;
-                }
-                const radio = document.querySelector(`[type="radio"][name="${key}"][value="${value}"]`);
-                if (radio !== null)
-                  return radio.click();
-                const check = document.querySelector(`[type="checkbox"][name="${key}"]`);
-                if (check !== null)
-                  return check.click();
-                document.querySelector(`[name="${key}"]`)?.setAttribute(`value`, value);
+            function warn(s) {
+              if (u.d)
+                console.warn(s);
+            }
+            Object.defineProperty(u, `d`, {
+              value: false,
+              enumerable: true,
+              writable: true,
+              configurable: false
+            });
+            Object.defineProperty(u, `p`, {
+              value: log,
+              enumerable: true,
+              writable: false,
+              configurable: false
+            });
+            Object.defineProperty(u, `w`, {
+              value: warn,
+              enumerable: true,
+              writable: false,
+              configurable: false
+            });
+            Object.seal(u);
+            u?.p?.(`LOADING EVENT: added utility`);
+          }
+          const ui = {};
+          FormBinding: {
+            const uiForm = document.forms.ui;
+            listen: {
+              function setHashToUI() {
+                u?.p?.(`UI: set hash to ui`);
+                const formData = new FormData(uiForm);
+                const entries = Array.from(formData.entries());
+                const onbect = Object.fromEntries(entries);
+                const json = JSON.stringify(onbect);
+                const base64 = btoa(json);
+                window.location.hash = `#${base64}`;
               }
-              Object.defineProperty(ui, key, {
-                get: get,
-                set: set,
+              uiForm.addEventListener(`change`, setHashToUI);
+              u?.p?.(`LOADING EVENT: added form change listener`);
+            }
+            object: {
+              const keys = Array.from((new FormData(uiForm)).keys());
+              for (const key of keys) {
+                function get() {
+                  u?.p?.(`UI: get ${key}`);
+                  const formData = new FormData(uiForm);
+                  const value = formData.get(key);
+                  if (value === null) {
+                    u?.w?.(`ERROR: failed to get value for key: ${key}`);
+                    return undefined;
+                  }
+                  return value.toString();
+                }
+
+                function set(value) {
+                  u?.p?.(`UI: set ${key} to ${value}`);
+                  try {
+                    u?.p?.(`UI: set hash to ui`);
+                    window.location.hash = btoa(JSON.stringify(ui));
+                  } catch {
+                    u?.w?.(`ERROR: failed to set hash to ui`);
+                    window.location.hash = `#`;
+                  }
+                  const radio = document.querySelector(`[type="radio"][name="${key}"][value="${value}"]`);
+                  if (radio !== null)
+                    return radio.click();
+                  const check = document.querySelector(`[type="checkbox"][name="${key}"]`);
+                  if (check !== null)
+                    return check.click();
+                  document.querySelector(`[name="${key}"]`)?.setAttribute(`value`, value);
+                }
+                Object.defineProperty(ui, key, {
+                  get: get,
+                  set: set,
+                  enumerable: true,
+                  configurable: false
+                });
+              }
+              Object.freeze(ui);
+              try {
+                u?.p?.(`UI: set ui to hash`);
+                Object.assign(ui, JSON.parse(atob(window.location.hash.slice(1))));
+              } catch {
+                u?.w?.(`ERROR: failed to set ui to hash`);
+                window.location.hash = `#`;
+              };
+            }
+            u?.p?.(`LOADING EVENT: added form binding`);
+          }
+          const reader = {};
+          readerWorker: {
+            const callbacks = new Map();
+            let worker;
+            try {
+              const elem = document.querySelector("script[type='text\/js-worker']");
+              if (elem === null) {
+                u?.w?.(`ERROR: failed to add worker: no script[type='text\/js-worker']`);
+                break readerWorker;
+              }
+              const blob = new Blob([elem.textContent], {
+                type: "text/javascript"
+              });
+              const url = window.URL.createObjectURL(blob);
+              worker = new Worker(url);
+            } catch {
+              u?.w?.(`ERROR: failed to add worker`);
+              break readerWorker;
+            }
+            worker: {
+              function onmessage({
+                data
+              }) {
+                u?.p?.(`FILE: onmessage`);
+                const entry = data.entries().next();
+                if (entry.done)
+                  return u?.w?.(`ERROR: failed to add worker: no entry`);
+                const value = entry.value;
+                if (value === undefined)
+                  return u?.w?.(`ERROR: failed to add worker: no value`);
+                const [name, text] = value;
+                const callback = callbacks.get(name);
+                if (callback === undefined)
+                  return u?.w?.(`ERROR: failed to add worker: no callback`);
+                callbacks.delete(name);
+                callback(name, text);
+              }
+              worker.addEventListener("message", onmessage);
+              Object.freeze(worker);
+              u?.p?.(`LOADING EVENT: added worker`);
+            }
+            reader: {
+              async function open() {
+                u?.p?.(`FILE: open`);
+                const files = await window.showOpenFilePicker({
+                  multiple: false,
+                  types: [{
+                    description: `SVG Files`,
+                    accept: {
+                      'image/svg+xml': [`.svg`]
+                    }
+                  }]
+                });
+                return files.pop();
+              }
+              async function read(callback) {
+                u?.p?.(`FILE: read`);
+                const fileMaybe = await open();
+                if (fileMaybe === undefined)
+                  return u?.w?.(`ERROR: failed to read file`);
+                callbacks.set(fileMaybe.name, callback);
+                const file = fileMaybe;
+                u?.p?.(`WORKER: postMessage`);
+                worker.postMessage(file);
+              }
+              Object.defineProperty(reader, `svg`, {
+                value: read,
                 enumerable: true,
+                writable: false,
                 configurable: false
               });
+              Object.freeze(reader);
+              u?.p?.(`LOADING EVENT: added reader`);
             }
-            Object.freeze(ui);
-            try {
-              Object.assign(ui, JSON.parse(atob(window.location.hash.slice(1))));
-            } catch {
-              window.location.hash = `#`;
-            };
-          }
-        }
-        const reader = {};
-        readerWorker: {
-          const callbacks = new Map();
-          let worker;
-          try {
-            const elem = document.querySelector("script[type='text\/js-worker']");
-            if (elem === null)
-              break readerWorker;
-            const blob = new Blob([elem.textContent], {
-              type: "text/javascript"
-            });
-            const url = window.URL.createObjectURL(blob);
-            worker = new Worker(url);
-          } catch {
-            break readerWorker;
-          }
-          worker: {
-            function onmessage({
-              data
-            }) {
-              const entry = data.entries().next();
-              if (entry.done)
-                return;
-              const value = entry.value;
-              if (value === undefined)
-                return;
-              const [name, text] = value;
-              const callback = callbacks.get(name);
-              if (callback === undefined)
-                return;
-              callbacks.delete(name);
-              callback(text);
+            addSVGButton: {
+              const svg = reader.svg;
+              if (svg === undefined) {
+                u?.w?.(`ERROR: failed to add add-svg button: no reader.svg`);
+                break addSVGButton;
+              }
+              const button = document.querySelector(`#add-svg`);
+              if (button === null) {
+                u?.w?.(`ERROR: failed to add add-svg button: no #add-svg`);
+                break addSVGButton;
+              }
+              const onclick = () => {
+                u?.p?.(`EVENT: add-svg button onclick`);
+                svg((name, data) => u?.p?.(data));
+              };
+              button.addEventListener(`click`, onclick);
+              u?.p?.(`LOADING EVENT: added add-svg button`);
             }
-            Object.defineProperty(worker, 'onmessage', {
-              value: onmessage,
-              enumerable: true,
-              writable: false,
-              configurable: false
-            });
-            Object.freeze(worker);
+            u?.p?.(`LOADING EVENT: added reader worker`);
           }
-          reader: {
-            async function open() {
-              const files = await window.showOpenFilePicker({
-                multiple: false,
-                types: [{
-                  description: `SVG Files`,
-                  accept: {
-                    'image/svg+xml': [`.svg`]
-                  }
-                }]
-              });
-              return files.pop();
-            }
-            async function read(callback) {
-              const fileMaybe = await open();
-              if (fileMaybe === undefined)
-                return;
-              callbacks.set(fileMaybe.name, callback);
-              const file = fileMaybe;
-              worker.postMessage(file);
-            }
-            Object.defineProperty(reader, `svg`, {
-              value: read,
-              enumerable: true,
-              writable: false,
-              configurable: false
-            });
-            Object.freeze(reader);
-          }
-        }
+          u?.p?.(`LOADING EVENT: added main`);
+        });
       }
     </script>
     <script defer="" type="text/javascript">
