@@ -46,7 +46,8 @@ Main: {
                 Object.defineProperty(ui, key, {
                     get: get,
                     set: set,
-                    enumerable: true
+                    enumerable: true,
+                    configurable: false
                 });
             }
             Object.freeze(ui);
