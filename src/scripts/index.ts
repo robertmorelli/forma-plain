@@ -2,66 +2,110 @@ Main: {
     const ui = {};
     FormBinding: {
         const uiForm = (document.forms as HTMLCollectionOf<HTMLFormElement> & { ui: HTMLFormElement }).ui;
-        uiForm.addEventListener(`change`, () =>
-            window.location.hash = `#${btoa(JSON.stringify(Object.assign(ui,
-                Object.fromEntries((new FormData(uiForm)).entries())
-            )))}`
-        );
-        Object.defineProperties(ui,
-            Object.fromEntries(Array.from((new FormData(uiForm)).keys())
-                .map(key => [
-                    key, {
-                        get: () => (new FormData(uiForm)).get(key),
-                        set: (value: string) => {
-                            window.location.hash = btoa(JSON.stringify(ui));
-                            const radio = document.querySelector(`[type="radio"][name="${key}"][value="${value}"]`);
-                            const check = document.querySelector(`[type="checkbox"][name="${key}"]`);
-                            if (radio ?? check) return ((radio ?? check) as HTMLInputElement).click();
-                            document.querySelector(`[name="${key}"]`)?.setAttribute(`value`, value);
-                        }, enumerable: true
+
+        listen: {
+            function setHashToUI(): void {
+                const formData = new FormData(uiForm);
+                const entries = Array.from(formData.entries());
+                const onbect = Object.fromEntries(entries);
+                const json = JSON.stringify(onbect);
+                const base64 = btoa(json);
+                window.location.hash = `#${base64}`;
+            }
+            uiForm.addEventListener(`change`, setHashToUI);
+        }
+
+        object: {
+            const keys = Array.from((new FormData(uiForm)).keys());
+            for (const key of keys) {
+                function get(): string | undefined {
+                    const formData: FormData = new FormData(uiForm);
+                    const value: FormDataEntryValue | null = formData.get(key);
+                    if (value === null) return undefined;
+                    return value.toString();
+                }
+                function set(value: string): void {
+                    try {
+                        window.location.hash = btoa(JSON.stringify(ui));
                     }
-                ]))
-        );
-        try {
-            Object.assign(ui, JSON.parse(atob(window.location.hash.slice(1))));
-        } catch {
-            window.location.hash = `#`;
-        };
+                    catch {
+                        window.location.hash = `#`;
+                    }
+                    const radio: Element | null = document.querySelector(
+                        `[type="radio"][name="${key}"][value="${value}"]`
+                    );
+                    if (radio !== null) return (radio as HTMLInputElement).click();
+
+                    const check: Element | null = document.querySelector(
+                        `[type="checkbox"][name="${key}"]`
+                    );
+                    if (check !== null) return (check as HTMLInputElement).click();
+
+                    document.querySelector(`[name="${key}"]`)?.setAttribute(`value`, value);
+                }
+                Object.defineProperty(ui, key, {
+                    get: get,
+                    set: set,
+                    enumerable: true
+                });
+            }
+            Object.freeze(ui);
+            try {
+                Object.assign(ui, JSON.parse(atob(window.location.hash.slice(1))));
+            } catch {
+                window.location.hash = `#`;
+            };
+        }
     }
-    const fileReader = {};
-    fileWorker: {
+    const reader = {};
+    readerWorker: {
         const callbacks: Map<string, Function> = new Map();
-        const worker = new Worker(`scripts/fileWorker.js`);
-        Object.freeze(
-            Object.seal(
-                Object.defineProperty(worker, 'onmessage', ({ data }: { data: Map<string, string> }) => {
-                    const [name, text] = data.entries().next().value;
-                    const callback: Function | undefined = callbacks.get(name);
-                    if (callback === undefined) return;
-                    callback(text);
-                    callbacks.delete(name);
-                })
-            )
-        );
-        Object.freeze(
-            Object.seal(
-                Object.defineProperty(fileReader, `svg`, (callback: Function) =>
-                    window.showOpenFilePicker({
-                        multiple: false,
-                        types: [{
-                            description: `SVG Files`,
-                            accept: { 'image/svg+xml': [`.svg`] }
-                        }]
-                    }).then((files: FileSystemFileHandle[]) => {
-                        const fileMaybe: FileSystemFileHandle | undefined = files.pop();
-                        if (fileMaybe === undefined) return;
-                        callbacks.set(fileMaybe.name, callback);
-                        const file: FileSystemFileHandle = fileMaybe;
-                        worker.postMessage(file);
-                    })
-                )
-            )
-        );
+
+        const worker: Worker = new Worker(`scripts/fileWorker.js`);
+        worker: {
+            function onmessage({ data }: { data: Map<string, string> }): void {
+                const entry: IteratorResult<[String, String] | undefined> = data.entries().next();
+                if (entry.done) return;
+                const value: [String, String] | undefined = entry.value;
+                if (value === undefined) return;
+                const [name, text]: [string, string] = value as [string, string];
+                const callback: Function | undefined = callbacks.get(name);
+                if (callback === undefined) return;
+                callbacks.delete(name);
+                callback(text);
+            }
+            Object.defineProperty(worker, 'onmessage', {
+                value: onmessage,
+                enumerable: true,
+                writable: false,
+                configurable: false
+            });
+            Object.freeze(worker);
+        }
+
+        reader: {
+            async function open(): Promise<FileSystemFileHandle | undefined> {
+                const files: FileSystemFileHandle[] = await window.showOpenFilePicker({
+                    multiple: false,
+                    types: [{ description: `SVG Files`, accept: { 'image/svg+xml': [`.svg`] } }]
+                });
+                return files.pop();
+            }
+            async function read(callback: Function): Promise<void> {
+                const fileMaybe: FileSystemFileHandle | undefined = await open();
+                if (fileMaybe === undefined) return;
+                callbacks.set(fileMaybe.name, callback);
+                const file: FileSystemFileHandle = fileMaybe;
+                worker.postMessage(file);
+            }
+            Object.defineProperty(reader, `svg`, {
+                value: read,
+                enumerable: true,
+                writable: false,
+                configurable: false
+            });
+            Object.freeze(reader);
+        }
     }
 }
 
