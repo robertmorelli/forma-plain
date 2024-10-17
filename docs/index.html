@@ -7,6 +7,10 @@
     <title>Make Animations</title>
     <style>
       @supports (display: grid) and (width: fit-content) and (user-select: none) {
+        :root {
+          --current-working-path: "m 0 0";
+        }
+
         html>body>form>hr#tab-bar {
           height: 0.1rem;
           grid-column: 2/-2;
@@ -40,6 +44,29 @@
           contain: strict;
           content-visibility: hidden;
           z-index: 1;
+        }
+
+        html>body>form>div#tool-box>div#ap>div#ap-wp {
+          display: grid;
+          width: 1000rem;
+          height: 1000rem;
+          padding: 0;
+        }
+
+        html>body>form>div#tool-box>div#ap>div#ap-wp>svg {
+          margin: 0;
+          width: 1000rem;
+          height: 1000rem;
+        }
+
+        html>body>form>div#tool-box>div#ap>div#ap-wp>svg>path {
+          will-change: d;
+          transform: translateZ(0);
+          d: path(var(--current-working-path));
+          stroke: black;
+          stroke-width: 0.2rem;
+          stroke-linecap: round;
+          fill: none;
         }
 
         html>body>form>input:nth-of-type(1):checked~hr:is(#hover-indicator, #tab-indicator) {
@@ -525,25 +552,31 @@ STYLE GUIDE:
         <div id="po">pick object</div>
         <div id="pp">pick path</div>
         <div id="ac">add color</div>
-        <div id="ap">add path</div>
+        <div id="ap">
+          <h2>add path</h2>
+          <div id="ap-wp">
+            <svg>
+              <path id="ap-wp-p"></path>
+            </svg>
+          </div>
+        </div>
         <div id="ao">add object</div>
       </div>
     </form>
     <script defer="" type="text/javascript">
       "use strict";
       Main: {
-        document.addEventListener(`DOMContentLoaded`, () => {
+        document.addEventListener(`DOMContentLoaded`, function() {
           const u = {};
           utility: {
-            function log(s) {
+            const log = function(s) {
               if (u.d)
                 console.log(s);
-            }
-
-            function warn(s) {
+            };
+            const warn = function(s) {
               if (u.d)
                 console.warn(s);
-            }
+            };
             Object.defineProperty(u, `d`, {
               value: false,
               enumerable: true,
@@ -569,22 +602,23 @@ STYLE GUIDE:
           FormBinding: {
             const uiForm = document.forms.ui;
             listen: {
-              function setHashToUI() {
+              const setHashToUI = function() {
                 u?.p?.(`UI: set hash to ui`);
                 const formData = new FormData(uiForm);
                 const entries = Array.from(formData.entries());
-                const onbect = Object.fromEntries(entries);
-                const json = JSON.stringify(onbect);
+                const object = Object.fromEntries(entries);
+                const json = JSON.stringify(object);
                 const base64 = btoa(json);
-                window.location.hash = `#${base64}`;
-              }
-              uiForm.addEventListener(`change`, setHashToUI);
+                const newUrl = `${window.location.pathname}#${base64}`;
+                history.replaceState(null, '', newUrl);
+              };
+              uiForm.addEventListener('change', setHashToUI);
               u?.p?.(`LOADING EVENT: added form change listener`);
             }
             object: {
               const keys = Array.from((new FormData(uiForm)).keys());
               for (const key of keys) {
-                function get() {
+                const get = function() {
                   u?.p?.(`UI: get ${key}`);
                   const formData = new FormData(uiForm);
                   const value = formData.get(key);
@@ -593,9 +627,8 @@ STYLE GUIDE:
                     return undefined;
                   }
                   return value.toString();
-                }
-
-                function set(value) {
+                };
+                const set = function(value) {
                   u?.p?.(`UI: set ${key} to ${value}`);
                   try {
                     u?.p?.(`UI: set hash to ui`);
@@ -611,7 +644,7 @@ STYLE GUIDE:
                   if (check !== null)
                     return check.click();
                   document.querySelector(`[name="${key}"]`)?.setAttribute(`value`, value);
-                }
+                };
                 Object.defineProperty(ui, key, {
                   get: get,
                   set: set,
@@ -650,7 +683,7 @@ STYLE GUIDE:
               break readerWorker;
             }
             worker: {
-              function onmessage({
+              const onmessage = function({
                 data
               }) {
                 u?.p?.(`FILE: onmessage`);
@@ -666,13 +699,13 @@ STYLE GUIDE:
                   return u?.w?.(`ERROR: failed to add worker: no callback`);
                 callbacks.delete(name);
                 callback(name, text);
-              }
+              };
               worker.addEventListener("message", onmessage);
               Object.freeze(worker);
               u?.p?.(`LOADING EVENT: added worker`);
             }
             reader: {
-              async function open() {
+              const open = async function() {
                 u?.p?.(`FILE: open`);
                 const files = await window.showOpenFilePicker({
                   multiple: false,
@@ -684,8 +717,8 @@ STYLE GUIDE:
                   }]
                 });
                 return files.pop();
-              }
-              async function read(callback) {
+              };
+              const read = async function(callback) {
                 u?.p?.(`FILE: read`);
                 const fileMaybe = await open();
                 if (fileMaybe === undefined)
@@ -694,7 +727,7 @@ STYLE GUIDE:
                 const file = fileMaybe;
                 u?.p?.(`WORKER: postMessage`);
                 worker.postMessage(file);
-              }
+              };
               Object.defineProperty(reader, `svg`, {
                 value: read,
                 enumerable: true,
@@ -715,14 +748,66 @@ STYLE GUIDE:
                 u?.w?.(`ERROR: failed to add add-svg button: no #add-svg`);
                 break addSVGButton;
               }
-              const onclick = () => {
+              const onclick = function() {
                 u?.p?.(`EVENT: add-svg button onclick`);
-                svg((name, data) => console.log(`name: ${name}\ndata: ${data}`));
+                svg(function(name, data) {
+                  console.log(`name: ${name}\ndata: ${data}`);
+                });
               };
               button.addEventListener(`click`, onclick);
               u?.p?.(`LOADING EVENT: added add-svg button`);
             }
             u?.p?.(`LOADING EVENT: added reader worker`);
+          }
+          svgPathMaker: {
+            const eventDiv = document.getElementById(`ap-wp`);
+            const path = document.getElementById(`ap-wp-p`);
+            if (eventDiv == null || path == null)
+              break svgPathMaker;
+            const style = document.documentElement.style;
+            const setCurrentWorkingPath = function(newPath) {
+              style.setProperty('--current-working-path', `"M` + newPath.slice(0, 2).join(` `) +
+                (newPath.length > 4 ? `Q` + newPath.slice(2, -2).join(` `) : ``) + `"`);
+            };
+            let basicPath = [];
+            let start = false;
+            const onStart = function() {
+              basicPath = [];
+              start = true;
+            };
+            const onMove = function(event) {
+              if (!start)
+                return;
+              const {
+                left,
+                top
+              } = eventDiv.getBoundingClientRect();
+              const x = Math.round(event.clientX - left);
+              const y = Math.round(event.clientY - top);
+              if ((Math.pow(x - (basicPath.at(-2) ?? 0), 2) + Math.pow(y - (basicPath.at(-1) ?? 0), 2)) > 20) {
+                if (basicPath.length > 2)
+                  basicPath.push(((basicPath.at(-2) ?? x) + x) / 2, ((basicPath.at(-1) ?? y) + y) / 2);
+                basicPath.push(x, y);
+              }
+              setCurrentWorkingPath(basicPath);
+            };
+            const onEnd = function() {
+              if (!start)
+                return;
+              start = false;
+              const listOfParts = [];
+              listOfParts.push(`m ${basicPath[0]} ${basicPath[1]}`);
+              for (let i = 2; i < basicPath.length - 2; i += 2) {
+                listOfParts.push(`C ${basicPath[i]} ${basicPath[i + 1]} ${basicPath[i + 2]} ${basicPath[i + 3]}`);
+              }
+              listOfParts.push(`T ${basicPath[basicPath.length - 2]} ${basicPath[basicPath.length - 1]}`);
+            };
+            eventDiv.addEventListener('pointerdown', onStart);
+            eventDiv.addEventListener('pointermove', onMove);
+            eventDiv.addEventListener('pointerup', onEnd);
+            eventDiv.addEventListener('pointercancel', onEnd);
+            document.addEventListener('pointerup', onEnd);
+            document.addEventListener('pointercancel', onEnd);
           }
           u?.p?.(`LOADING EVENT: added main`);
         });

@@ -1,4 +1,7 @@
 @supports (display: grid) and (width: fit-content) and (user-select: none) {
+  :root {
+    --current-working-path: "m 0 0";
+  }
   html>body>form {
     >hr {
       &#tab-bar {
@@ -33,6 +36,26 @@
         contain: strict;
         content-visibility: hidden;
         z-index: 1;
+        &#ap>div#ap-wp {
+          display: grid;
+          width: 1000rem;
+          height: 1000rem;
+          padding: 0;
+          >svg  {
+            margin: 0;
+            width: 1000rem;
+            height: 1000rem;
+              >path{
+                will-change: d;
+                transform: translateZ(0);
+                d: path(var(--current-working-path));
+                stroke: black;
+                stroke-width: 0.2rem;
+                stroke-linecap: round;
+                fill: none;
+              }
+            }
+          }
       }
     }
 
