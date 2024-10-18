@@ -1,8 +1,5 @@
 @supports (display: grid) and (width: fit-content) and (user-select: none) {
     html>body {
-        --offwhite: white;
-        --offblack: #212121;
-
         background-color: var(--offwhite);
 
         width: 100vw;

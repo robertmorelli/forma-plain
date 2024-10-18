@@ -1,0 +1,65 @@
+@mixin format {
+    grid-template: min-content 2rem auto / auto repeat(11, min-content) auto;
+    padding: 0.5rem;
+
+    @for $i from 1 through 12 {
+        >label:nth-of-type(#{$i}) {
+            grid-column: calc($i + 1) / span 1;
+            grid-row: 1 / span 1;
+        }
+    }
+    >hr {
+        &#tab-bar {
+            height: 0.1rem;
+            grid-column: 2 / -2;
+            grid-row: 2 / span 1;
+        }
+
+        &#tab-indicator {
+            height: 0.3rem;
+            grid-row: 2 / span 1;
+            grid-column-end: span 1;
+        }
+
+        &#hover-indicator {
+            height: 0.25rem;
+            grid-row: 2 / span 1;
+            grid-column-end: span 1;
+        }
+
+        &#hover-bar {
+            height: 0.2rem;
+            grid-row: 2 / span 1;
+            grid-column-end: span 1;
+        }
+    }
+}
+
+@mixin indicator {
+    @for $i from 1 through 12 {
+        >input:nth-of-type(#{$i}):checked~hr:is(#hover-indicator, #tab-indicator) {
+            grid-column-start: calc($i + 1);
+        }
+
+        >input:nth-of-type(#{$i}):checked~hr#hover-bar {
+            grid-column-start: calc($i + 1);
+        }
+    }
+
+    @for $i from 1 through 12 {
+        >label:nth-of-type(#{$i}):hover~hr#hover-indicator {
+            grid-column-start: calc($i + 1);
+            display: inherit;
+        }
+
+        >input:nth-of-type(#{$i}):hover~hr#hover-bar {
+            grid-column-end: calc($i + 1);
+            display: inherit;
+        }
+
+        >input:nth-of-type(#{$i}):checked~div#tool-box>div:nth-of-type(#{$i}) {
+            content-visibility: visible;
+            z-index: 2;
+        }
+    }
+}

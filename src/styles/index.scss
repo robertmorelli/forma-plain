@@ -1,33 +1,29 @@
-/*
-STYLE GUIDE:
+@use "./tabs" as tabs;
+@use "./globals" as g;
+@use "./tab-bar" as bar;
 
-1. for sizing ui... no pixels nowhere nohow not ever nope and in no place. I will find you and kill you!
-2. use ">" over " " wherever possible and reasonable
-3. place duplicate code that should remain in sync in a,b {...} even if b {...} already exists
-4. grid templates only use min-content and auto (and maybe fr units)
-5. minimize depth. use complex grids over nesting wherever reasonable
-6. no timed animations/transitions
-7. its grayscale baby
-*/
 @supports (display: grid) and (width: fit-content) and (user-select: none) {
-  html > body {
-    > form#prog-state {
-      display: none;
+  @include g.variables;
+  html>body{
+    >form#prog-state {
+        display: none;
     }
-    > form#ui {
-      grid-template: min-content 2rem auto / auto repeat(11, min-content) auto;
-      padding: 0.5rem;
-
-      > div#tool-box {
+    >form#ui {
+      @include bar.format;
+      @include bar.indicator;
+      >div#tool-box {
         contain: strict;
         grid-column: 1 / -1;
         grid-row: 3 / span 1;
-      }
-
-      @for $i from 1 through 12 {
-        > label:nth-of-type(#{$i}) {
-          grid-column: calc($i + 1) / span 1;
-          grid-row: 1 / span 1;
+        grid-template: 1 / 1;
+        >div {
+          grid-area: 1 / 1;
+          contain: strict;
+          content-visibility: hidden;
+          z-index: 1;
+          &#ap {
+            @include tabs.add-path;
+          }
         }
       }
     }

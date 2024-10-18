@@ -1,0 +1,23 @@
+@mixin add-path {
+    >div#ap-wp {
+        display: grid;
+        width: 100rem;
+        height: 100rem;
+        padding: 0;
+        >svg {
+            width: 100rem;
+            height: 100rem;
+            margin: 0;
+
+            >path {
+                will-change: d;
+                transform: translateZ(0);
+                d: path(var(--current-working-path));
+                stroke: black;
+                stroke-width: 0.2rem;
+                stroke-linecap: round;
+                fill: none;
+            }
+        }
+    }
+}
