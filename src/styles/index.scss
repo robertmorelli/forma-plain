@@ -1,8 +1,9 @@
 @use "./tabs" as tabs;
 @use "./globals" as g;
 @use "./tab-bar" as bar;
+@namespace svg url(http://www.w3.org/2000/svg);
 
-@supports (display: grid) and (width: fit-content) and (user-select: none) {
+@supports (display: grid) and (width: fit-content) and (user-select: none) and (content-visibility: hidden) {
   @include g.variables;
   html>body{
     >form#prog-state {

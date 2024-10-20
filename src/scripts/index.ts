@@ -257,6 +257,7 @@ Main: {
 
             document.addEventListener('pointerup', onEnd);
             document.addEventListener('pointercancel', onEnd);
+            document.addEventListener('pointerleave' , onEnd);
         }
 
         u?.p?.(`LOADING EVENT: added main`);

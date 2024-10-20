@@ -1,15 +1,14 @@
 @mixin add-path {
     >div#ap-wp {
         display: grid;
-        width: 100rem;
-        height: 100rem;
+        grid-template: 1fr / 1fr;
         padding: 0;
+        border: 0.1rem var(--offblack) solid;
         >svg {
-            width: 100rem;
-            height: 100rem;
+            width: 100%;
+            height: 100%;
             margin: 0;
-
-            >path {
+            >svg|path {
                 will-change: d;
                 transform: translateZ(0);
                 d: path(var(--current-working-path));

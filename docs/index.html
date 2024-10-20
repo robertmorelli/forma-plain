@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Make Animations</title>
     <style>
-      @supports (display: grid) and (width: fit-content) and (user-select: none) {
+      @namespace svg url(http://www.w3.org/2000/svg);
+      @supports (display: grid) and (width: fit-content) and (user-select: none) and (content-visibility: hidden) {
         :root {
           --current-working-path: "m 0 0";
           --offwhite: white;
@@ -18,7 +19,7 @@
         }
 
         html>body>form#ui {
-          grid-template: min-content 2rem auto/auto repeat(11, min-content) auto;
+          grid-template: min-content 2rem auto/auto repeat(12, min-content) auto;
           padding: 0.5rem;
         }
 
@@ -79,6 +80,11 @@
 
         html>body>form#ui>label:nth-of-type(12) {
           grid-column: 13/span 1;
+          grid-row: 1/span 1;
+        }
+
+        html>body>form#ui>label:nth-of-type(13) {
+          grid-column: 14/span 1;
           grid-row: 1/span 1;
         }
 
@@ -200,6 +206,14 @@
 
         html>body>form#ui>input:nth-of-type(12):checked~hr#hover-bar {
           grid-column-start: 13;
+        }
+
+        html>body>form#ui>input:nth-of-type(13):checked~hr:is(#hover-indicator, #tab-indicator) {
+          grid-column-start: 14;
+        }
+
+        html>body>form#ui>input:nth-of-type(13):checked~hr#hover-bar {
+          grid-column-start: 14;
         }
 
         html>body>form#ui>label:nth-of-type(1):hover~hr#hover-indicator {
@@ -382,6 +396,21 @@
           z-index: 2;
         }
 
+        html>body>form#ui>label:nth-of-type(13):hover~hr#hover-indicator {
+          grid-column-start: 14;
+          display: inherit;
+        }
+
+        html>body>form#ui>input:nth-of-type(13):hover~hr#hover-bar {
+          grid-column-end: 14;
+          display: inherit;
+        }
+
+        html>body>form#ui>input:nth-of-type(13):checked~div#tool-box>div:nth-of-type(13) {
+          content-visibility: visible;
+          z-index: 2;
+        }
+
         html>body>form#ui>div#tool-box {
           contain: strict;
           grid-column: 1/-1;
@@ -398,18 +427,18 @@
 
         html>body>form#ui>div#tool-box>div#ap>div#ap-wp {
           display: grid;
-          width: 100rem;
-          height: 100rem;
+          grid-template: 1fr/1fr;
           padding: 0;
+          border: 0.1rem var(--offblack) solid;
         }
 
         html>body>form#ui>div#tool-box>div#ap>div#ap-wp>svg {
-          width: 100rem;
-          height: 100rem;
+          width: 100%;
+          height: 100%;
           margin: 0;
         }
 
-        html>body>form#ui>div#tool-box>div#ap>div#ap-wp>svg>path {
+        html>body>form#ui>div#tool-box>div#ap>div#ap-wp>svg>svg|path {
           will-change: d;
           transform: translateZ(0);
           d: path(var(--current-working-path));
@@ -517,6 +546,8 @@
       <label for="tab-10" title="new path tool">+~</label>
       <input type="radio" name="tab" value="add-object" id="tab-11">
       <label for="tab-11" title="create object from path tool">+%</label>
+      <input type="radio" name="tab" value="view-result" id="tab-12">
+      <label for="tab-12" title="view animation and export">[]</label>
       <hr id="tab-bar">
       <hr id="tab-indicator">
       <hr id="hover-indicator">
@@ -544,6 +575,7 @@
           </div>
         </div>
         <div id="ao">add object</div>
+        <div id="vr">view result and export</div>
       </div>
     </form>
     <script defer="" type="text/javascript">
@@ -791,6 +823,7 @@
             eventDiv.addEventListener('pointercancel', onEnd);
             document.addEventListener('pointerup', onEnd);
             document.addEventListener('pointercancel', onEnd);
+            document.addEventListener('pointerleave', onEnd);
           }
           u?.p?.(`LOADING EVENT: added main`);
         });
